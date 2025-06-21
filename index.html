@@ -1,1 +1,169 @@
+¡Claro! A continuación, te proporciono un código en HTML y JavaScript que te permitirá resolver desigualdades lineales y cuadráticas. Este programa solicita al usuario ingresar los coeficientes de la desigualdad y elige el tipo de desigualdad para determinar el conjunto de soluciones.
+
+---
+
+### 🧮 Calculadora de Desigualdades Lineales y Cuadráticas
+
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Calculadora de Desigualdades</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+    }
+    label, select, input {
+      display: block;
+      margin: 10px 0;
+    }
+    #resultado {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h2>Calculadora de Desigualdades</h2>
+
+  <label for="tipo">Tipo de desigualdad:</label>
+  <select id="tipo">
+    <option value="lineal">Lineal (ax + b)</option>
+    <option value="cuadratica">Cuadrática (ax² + bx + c)</option>
+  </select>
+
+  <label for="a">Coeficiente a:</label>
+  <input type="number" id="a" step="any">
+
+  <label for="b">Coeficiente b:</label>
+  <input type="number" id="b" step="any">
+
+  <label for="c" id="label-c" style="display: none;">Coeficiente c:</label>
+  <input type="number" id="c" step="any" style="display: none;">
+
+  <label for="desigualdad">Tipo de desigualdad:</label>
+  <select id="desigualdad">
+    <option value=">">></option>
+    <option value="<"><</option>
+    <option value=">=">>=</option>
+    <option value="<="><=</option>
+  </select>
+
+  <button onclick="resolver()">Resolver</button>
+
+  <div id="resultado"></div>
+
+  <script>
+    const tipoSelect = document.getElementById('tipo');
+    const cLabel = document.getElementById('label-c');
+    const cInput = document.getElementById('c');
+
+    tipoSelect.addEventListener('change', () => {
+      if (tipoSelect.value === 'cuadratica') {
+        cLabel.style.display = 'block';
+        cInput.style.display = 'block';
+      } else {
+        cLabel.style.display = 'none';
+        cInput.style.display = 'none';
+      }
+    });
+
+    function resolver() {
+      const tipo = document.getElementById('tipo').value;
+      const a = parseFloat(document.getElementById('a').value);
+      const b = parseFloat(document.getElementById('b').value);
+      const c = parseFloat(document.getElementById('c').value);
+      const desigualdad = document.getElementById('desigualdad').value;
+      const resultado = document.getElementById('resultado');
+
+      if (tipo === 'lineal') {
+        if (a === 0) {
+          if (eval(`${b} ${desigualdad} 0`)) {
+            resultado.textContent = 'La desigualdad se cumple para todos los valores de x.';
+          } else {
+            resultado.textContent = 'La desigualdad no tiene solución.';
+          }
+        } else {
+          const x = -b / a;
+          let solucion = '';
+          switch (desigualdad) {
+            case '>':
+              solucion = a > 0 ? `x > ${x}` : `x < ${x}`;
+              break;
+            case '<':
+              solucion = a > 0 ? `x < ${x}` : `x > ${x}`;
+              break;
+            case '>=':
+              solucion = a > 0 ? `x ≥ ${x}` : `x ≤ ${x}`;
+              break;
+            case '<=':
+              solucion = a > 0 ? `x ≤ ${x}` : `x ≥ ${x}`;
+              break;
+          }
+          resultado.textContent = `Solución: ${solucion}`;
+        }
+      } else {
+        if (a === 0) {
+          // Se convierte en una desigualdad lineal
+          if (b === 0) {
+            if (eval(`${c} ${desigualdad} 0`)) {
+              resultado.textContent = 'La desigualdad se cumple para todos los valores de x.';
+            } else {
+              resultado.textContent = 'La desigualdad no tiene solución.';
+            }
+          } else {
+            const x = -c / b;
+            let solucion = '';
+            switch (desigualdad) {
+              case '>':
+                solucion = b > 0 ? `x > ${x}` : `x < ${x}`;
+                break;
+              case '<':
+                solucion = b > 0 ? `x < ${x}` : `x > ${x}`;
+                break;
+              case '>=':
+                solucion = b > 0 ? `x ≥ ${x}` : `x ≤ ${x}`;
+                break;
+              case '<=':
+                solucion = b > 0 ? `x ≤ ${x}` : `x ≥ ${x}`;
+                break;
+            }
+            resultado.textContent = `Solución: ${solucion}`;
+          }
+        } else {
+          const discriminante = b * b - 4 * a * c;
+          if (discriminante < 0) {
+            const valor = a > 0 ? 'positivo' : 'negativo';
+            switch (desigualdad) {
+              case '>':
+                resultado.textContent = a > 0 ? 'La desigualdad se cumple para todos los valores de x.' : 'La desigualdad no tiene solución.';
+                break;
+              case '<':
+                resultado.textContent = a < 0 ? 'La desigualdad se cumple para todos los valores de x.' : 'La desigualdad no tiene solución.';
+                break;
+              case '>=':
+                resultado.textContent = a > 0 ? 'La desigualdad se cumple para todos los valores de x.' : 'La desigualdad no tiene solución.';
+                break;
+              case '<=':
+                resultado.textContent = a < 0 ? 'La desigualdad se cumple para todos los valores de x.' : 'La desigualdad no tiene solución.';
+                break;
+            }
+          } else {
+            const x1 = (-b + Math.sqrt(discriminante)) / (2 * a);
+            const x2 = (-b - Math.sqrt(discriminante)) / (2 * a);
+            const [menor, mayor] = [Math.min(x1, x2), Math.max(x1, x2)];
+            let solucion = '';
+            switch (desigualdad) {
+              case '>':
+                solucion = a > 0 ? `x < ${menor} o x > ${mayor}` : `x ∈ (${menor}, ${mayor})`;
+                break;
+              case '<':
+                solucion = a < 0 ? `x < ${menor} o x > ${mayor}` : `x ∈ (${menor}, ${mayor})`;
+                break;
+              case '>='
+::contentReference[oaicite:1]{index=1}
+ 
+```
 
